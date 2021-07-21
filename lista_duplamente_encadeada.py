@@ -50,35 +50,55 @@ class ListaDuplamenteEncadeada:
     def posicaoDe(self, key):
         pass
 
-    """Operações"""
+    """Operações atômicas"""
 
-    def inserirNoFim(self, new):
-        self._irParaUltimo()
+    def inserirAposAtual(self, new):
         node = Node(new)
         if self.head:
+            node.next = self.pointer.next
             node.prev = self.pointer
             self.pointer.next = node
             self.pointer = node
-            self.tail = node
             self.size += 1
+            if self.pointer.next is None:
+                self.tail = node
         else:
             self.head = node
             self.tail = node
             self.size += 1
 
-    def excluirUlt(self):
-        self._irParaUltimo()
+    def excluir(self):
         if self.head == self.tail:
             self.head = None
             self.tail = None
             self.size = 0
-        elif self.head:
+        elif self.pointer.next is None:
             self.pointer = self.pointer.prev
             self.pointer.next = None
             self.tail = self.pointer
             self.size -= 1
+        elif self.head:
+            prev = self.pointer.prev
+            next = self.pointer.next
+            self.pointer = self.pointer.prev
+            self.pointer.next = next
+            self.pointer = self.pointer.next
+            self.pointer.prev = prev
+            self.size -= 1
         else:
             print("Lista vazia!")
+
+    """Operações sofisticadas"""
+
+    def inserirNoFim(self, new):
+        self._irParaUltimo()
+        self.inserirAposAtual(new)
+
+    def excluirUlt(self):
+        self._irParaUltimo()
+        self.excluir()
+
+    """Operações para print da lista"""
 
     def __repr__(self):
         r = ""
