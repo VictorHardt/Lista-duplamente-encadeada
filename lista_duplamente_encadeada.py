@@ -6,3 +6,6 @@ class Node:
 class ListaDuplamenteEncadeada:
     def __init__(self):
         pass
+
+
+"""Teste"""
