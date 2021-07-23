@@ -48,7 +48,18 @@ class ListaDuplamenteEncadeada:
             return False
 
     def posicaoDe(self, key):
-        pass
+        "Começando da posição 1, retorna 0 se o elemento não estiver na lista"
+        ghost = Node(key)
+        self.tail.next = ghost
+        posicao = 1
+        self._irParaPrimeiro()
+        while self.pointer.data != key:
+            posicao += 1
+            self.pointer = self.pointer.next
+        if posicao > self.size:
+            posicao = 0
+        self.tail.next = None
+        return posicao
 
     """Operações atômicas"""
 
@@ -120,6 +131,8 @@ l.inserirNoFim(1)
 l.inserirNoFim(2)
 l.inserirNoFim(3)
 print(l)
+print(l.posicaoDe(3))
+print(l.posicaoDe(4))
 l.excluirUlt()
 l.excluirUlt()
 print(l)
