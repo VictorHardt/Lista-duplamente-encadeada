@@ -88,6 +88,7 @@ class ListaDuplamenteEncadeada:
                 node.next = self.pointer
                 self.pointer.prev.next = node
                 self.pointer.prev = node
+                self.pointer = node
             else:
                 node.next = self.pointer
                 self.pointer.prev = node
@@ -124,6 +125,9 @@ class ListaDuplamenteEncadeada:
             self.size -= 1
         else:
             print("Lista vazia!")
+
+    def acessarAtual(self):
+        return self.pointer.data
 
     """Operações sofisticadas"""
 
@@ -198,11 +202,20 @@ l.inserirAposAtual(3)
 l.inserirAposAtual(9)
 l.inserirAntesDoAtual(5)
 l.inserirAntesDoAtual(2)
+l.inserirNoFim(6)
+l.inserirNaFrente(1)
 print(l)
-print(l.posicaoDe(3))
-l.excluirElemento(3)
+l.excluirUlt()
 print(l)
-l.excluirDaPos(3)
+l.excluirPrimeiro()
+print(l)
+print(l.acessarAtual())
+l.excluirAtual()
+print(l)
+print(l.posicaoDe(9))
+l.excluirElemento(9)
+print(l)
+l.excluirDaPos(2)
 print(l)
 l.inserirNaPosicao(1, 4)
 print(l)
