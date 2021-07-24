@@ -48,17 +48,18 @@ class ListaDuplamenteEncadeada:
             return False
 
     def posicaoDe(self, key):
-        "Começando da posição 1, retorna 0 se o elemento não estiver na lista"
-        ghost = Node(key)
-        self.tail.next = ghost
-        posicao = 1
-        self._irParaPrimeiro()
-        while self.pointer.data != key:
-            posicao += 1
-            self.pointer = self.pointer.next
-        if posicao > self.size:
-            posicao = 0
-        self.tail.next = None
+        "Começando da posição 1, retorna None se o elemento não estiver na lista"
+        if self.tail:
+            ghost = Node(key)
+            self.tail.next = ghost
+            posicao = 1
+            self._irParaPrimeiro()
+            while self.pointer.data != key:
+                posicao += 1
+                self.pointer = self.pointer.next
+            if posicao > self.size:
+                posicao = None
+            self.tail.next = None
         return posicao
 
     """Operações atômicas"""
@@ -77,6 +78,26 @@ class ListaDuplamenteEncadeada:
             self.head = node
             self.tail = node
             self.size += 1
+            self.pointer = node
+
+    def inserirAntesDoAtual(self, new):
+        node = Node(new)
+        if self.head:
+            if self.pointer != self.head:
+                node.prev = self.pointer.prev
+                node.next = self.pointer
+                self.pointer.prev.next = node
+                self.pointer.prev = node
+            else:
+                node.next = self.pointer
+                self.pointer.prev = node
+                self.head = node
+            self.size += 1
+        else:
+            self.head = node
+            self.tail = node
+            self.size += 1
+            self.pointer = node
 
     def excluir(self):
         if self.head == self.tail:
@@ -87,6 +108,11 @@ class ListaDuplamenteEncadeada:
             self.pointer = self.pointer.prev
             self.pointer.next = None
             self.tail = self.pointer
+            self.size -= 1
+        elif self.pointer == self.head:
+            self.pointer.next.prev = None
+            self.pointer = self.pointer.next
+            self.head = self.pointer
             self.size -= 1
         elif self.head:
             prev = self.pointer.prev
@@ -105,9 +131,48 @@ class ListaDuplamenteEncadeada:
         self._irParaUltimo()
         self.inserirAposAtual(new)
 
+    def inserirNaFrente(self, new):
+        self._irParaPrimeiro()
+        self.inserirAntesDoAtual(new)
+
+    def inserirNaPosicao(self, k, new):
+        self._irParaPrimeiro()
+        if k != 1:
+            pos = k - 2
+            self._avancarKPosicoes(pos)
+            self.inserirAposAtual(new)
+        else:
+            self.inserirAntesDoAtual(new)
+
     def excluirUlt(self):
         self._irParaUltimo()
         self.excluir()
+
+    def excluirAtual(self):
+        self.excluir()
+
+    def excluirPrimeiro(self):
+        self._irParaPrimeiro()
+        self.excluir()
+
+    def excluirElemento(self, key):
+        self._irParaPrimeiro()
+        posicao = self.posicaoDe(key)
+        if posicao:
+            self._avancarKPosicoes(posicao - 2)
+            self.excluir()
+
+    def excluirDaPos(self, k):
+        self._irParaPrimeiro()
+        self._avancarKPosicoes(k - 1)
+        self.excluir()
+
+    def buscar(self, key):
+        if self.posicaoDe(key):
+            achou = True
+        else: 
+            achou = False
+        return achou
 
     """Operações para print da lista"""
 
@@ -127,13 +192,19 @@ class ListaDuplamenteEncadeada:
 
 
 l = ListaDuplamenteEncadeada()
-l.inserirNoFim(1)
-l.inserirNoFim(2)
-l.inserirNoFim(3)
+
+print(l)
+l.inserirAposAtual(3)
+l.inserirAposAtual(9)
+l.inserirAntesDoAtual(5)
+l.inserirAntesDoAtual(2)
 print(l)
 print(l.posicaoDe(3))
-print(l.posicaoDe(4))
-l.excluirUlt()
-l.excluirUlt()
+l.excluirElemento(3)
 print(l)
-print(l.vazia())
+l.excluirDaPos(3)
+print(l)
+l.inserirNaPosicao(1, 4)
+print(l)
+print(l.buscar(4))
+print(l.buscar(54))
